@@ -1,0 +1,381 @@
+
+<style>
+  #toolkit { font-family: var(--font-sans); padding: 1.5rem 0; }
+  .tool-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.1rem 1.25rem; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: border-color 0.15s; }
+  .tool-card:hover { border-color: var(--color-border-primary); }
+  .tool-icon { width: 40px; height: 40px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+  .tool-num { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); margin: 0 0 2px; letter-spacing: 0.06em; }
+  .tool-title { font-size: 15px; font-weight: 500; margin: 0 0 3px; color: var(--color-text-primary); }
+  .tool-desc { font-size: 13px; color: var(--color-text-secondary); margin: 0; line-height: 1.5; }
+  .launch-btn { margin-left: auto; flex-shrink: 0; align-self: center; font-size: 12px; padding: 5px 14px; cursor: pointer; background: transparent; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); white-space: nowrap; }
+  .launch-btn:hover { background: var(--color-background-secondary); }
+
+  .active-tool { display: none; margin-top: 1.5rem; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 1.5rem; }
+  .back-btn { font-size: 13px; color: var(--color-text-secondary); cursor: pointer; background: transparent; border: none; padding: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 4px; }
+  .back-btn:hover { color: var(--color-text-primary); }
+  textarea { width: 100%; box-sizing: border-box; min-height: 110px; font-size: 14px; resize: vertical; }
+  select, input[type=text] { font-size: 13px; }
+  .run-btn { font-size: 14px; padding: 8px 20px; cursor: pointer; background: var(--color-text-primary); color: var(--color-background-primary); border: none; border-radius: var(--border-radius-md); font-weight: 500; }
+  .run-btn:hover { opacity: 0.85; }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .output-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-top: 1rem; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 6px; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 500; margin-right: 5px; margin-bottom: 4px; }
+  .b-purple { background: #EEEDFE; color: #3C3489; }
+  .b-teal { background: #E1F5EE; color: #085041; }
+  .b-amber { background: #FAEEDA; color: #633806; }
+  .b-coral { background: #FAECE7; color: #712B13; }
+  .b-gray { background: #F1EFE8; color: #444441; }
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--color-border-secondary); border-top-color: var(--color-text-primary); border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-text { font-size: 14px; line-height: 1.7; color: var(--color-text-primary); white-space: pre-wrap; }
+  hr.div { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 10px 0; }
+  .score-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .score-bar-wrap { flex: 1; height: 6px; background: var(--color-background-secondary); border-radius: 4px; overflow: hidden; }
+  .score-bar { height: 100%; background: #534AB7; border-radius: 4px; }
+  .theme-cluster { border-left: 3px solid #534AB7; border-radius: 0; padding: 8px 12px; margin-bottom: 10px; background: var(--color-background-secondary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+</style>
+
+<div id="toolkit">
+  <h2 class="sr-only">PM toolkit — five AI-powered tools for product managers</h2>
+
+  <div id="tool-list">
+    <div class="tool-card" onclick="openTool(0)">
+      <div class="tool-icon" style="background:#EEEDFE; color:#3C3489;"><i class="ti ti-file-description" aria-hidden="true"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p class="tool-num">01</p>
+        <p class="tool-title">PRD first draft generator</p>
+        <p class="tool-desc">Describe a feature in plain English → structured PRD with goals, user stories, and success metrics</p>
+      </div>
+      <button class="launch-btn">Open ↗</button>
+    </div>
+
+    <div class="tool-card" onclick="openTool(1)">
+      <div class="tool-icon" style="background:#E1F5EE; color:#085041;"><i class="ti ti-messages" aria-hidden="true"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p class="tool-num">02</p>
+        <p class="tool-title">User interview synthesiser</p>
+        <p class="tool-desc">Paste interview notes → AI clusters themes, surfaces top pain points, and suggests solutions</p>
+      </div>
+      <button class="launch-btn">Open ↗</button>
+    </div>
+
+    <div class="tool-card" onclick="openTool(2)">
+      <div class="tool-icon" style="background:#FAEEDA; color:#633806;"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p class="tool-num">03</p>
+        <p class="tool-title">Prioritisation scorer</p>
+        <p class="tool-desc">Input a feature list + criteria (RICE or ICE) → AI scores and ranks each item with justifications</p>
+      </div>
+      <button class="launch-btn">Open ↗</button>
+    </div>
+
+    <div class="tool-card" onclick="openTool(3)">
+      <div class="tool-icon" style="background:#FAECE7; color:#712B13;"><i class="ti ti-speakerphone" aria-hidden="true"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p class="tool-num">04</p>
+        <p class="tool-title">Release notes writer</p>
+        <p class="tool-desc">Input a changelog → user-facing release notes in plain, engaging language by audience segment</p>
+      </div>
+      <button class="launch-btn">Open ↗</button>
+    </div>
+
+    <div class="tool-card" onclick="openTool(4)">
+      <div class="tool-icon" style="background:#F1EFE8; color:#444441;"><i class="ti ti-telescope" aria-hidden="true"></i></div>
+      <div style="flex:1; min-width:0;">
+        <p class="tool-num">05</p>
+        <p class="tool-title">Competitor feature tracker</p>
+        <p class="tool-desc">Describe a competitor → AI summary of likely recent features and strategic implications</p>
+      </div>
+      <button class="launch-btn">Open ↗</button>
+    </div>
+  </div>
+
+  <div id="active-tool" class="active-tool">
+    <button class="back-btn" onclick="closeTool()"><i class="ti ti-arrow-left" style="font-size:14px;" aria-hidden="true"></i> Back to toolkit</button>
+    <div id="tool-body"></div>
+  </div>
+</div>
+
+<script>
+const TOOLS = [
+  {
+    id: 0,
+    icon: 'ti-file-description',
+    color: '#EEEDFE',
+    tcolor: '#3C3489',
+    label: '01 — PRD first draft generator',
+    fields: [
+      { id: 'f0', label: 'Describe your feature', type: 'textarea', placeholder: 'e.g. Add a dark mode toggle that persists across sessions...' },
+      { id: 'f1', label: 'Product type', type: 'select', options: ['SaaS / Web app','Mobile app','E-commerce','Internal tool','API / Platform'] },
+      { id: 'f2', label: 'Depth', type: 'select', options: ['Concise (1-pager)','Standard','Detailed'] }
+    ],
+    prompt: (vals) => `You are a senior product manager. Generate a PRD first draft for this feature.
+Product type: ${vals[1]}. Depth: ${vals[2]}.
+Feature: ${vals[0]}
+
+Return ONLY a JSON object (no markdown, no backticks):
+{"title":"short feature name","problem":"2-3 sentence problem statement","goals":["goal1","goal2","goal3"],"non_goals":["non-goal1","non-goal2"],"user_stories":[{"persona":"persona","story":"As a ... I want ... so that ..."},{"persona":"persona","story":"As a ... I want ... so that ..."}],"requirements":{"must":["req1","req2","req3"],"nice":["req1","req2"]},"metrics":[{"name":"metric","target":"target","type":"adoption|engagement|quality|business"},{"name":"metric","target":"target","type":"adoption|engagement|quality|business"}],"risks":["risk1","risk2"],"questions":["q1","q2"]}`,
+    render: renderPRD
+  },
+  {
+    id: 1,
+    icon: 'ti-messages',
+    color: '#E1F5EE',
+    tcolor: '#085041',
+    label: '02 — User interview synthesiser',
+    fields: [
+      { id: 'f0', label: 'Paste your interview notes', type: 'textarea', placeholder: 'Paste raw notes from one or more user interviews...' },
+      { id: 'f1', label: 'Number of participants', type: 'select', options: ['1–3','4–8','9–15','15+'] }
+    ],
+    prompt: (vals) => `You are a UX researcher. Synthesise these user interview notes (${vals[1]} participants) into structured insights.
+
+Notes: ${vals[0]}
+
+Return ONLY a JSON object (no markdown, no backticks):
+{"themes":[{"name":"theme name","frequency":"high|medium|low","quotes":["short paraphrase 1","short paraphrase 2"],"pain":"core pain point in one sentence"},{"name":"theme name","frequency":"high|medium|low","quotes":["short paraphrase 1"],"pain":"core pain point"}],"top_pain_points":["pain 1","pain 2","pain 3"],"solutions":["suggested solution 1","suggested solution 2","suggested solution 3"],"segments":["user segment 1","user segment 2"],"confidence":"low|medium|high","next_steps":["next step 1","next step 2"]}`,
+    render: renderSynthesis
+  },
+  {
+    id: 2,
+    icon: 'ti-chart-bar',
+    color: '#FAEEDA',
+    tcolor: '#633806',
+    label: '03 — Prioritisation scorer',
+    fields: [
+      { id: 'f0', label: 'Feature list (one per line)', type: 'textarea', placeholder: 'Dark mode\nBulk export\nSSO integration\nMobile app\nIn-app chat' },
+      { id: 'f1', label: 'Framework', type: 'select', options: ['RICE (Reach, Impact, Confidence, Effort)','ICE (Impact, Confidence, Ease)'] },
+      { id: 'f2', label: 'Context (optional)', type: 'text', placeholder: 'e.g. B2B SaaS, growth stage, 10k MAU' }
+    ],
+    prompt: (vals) => `You are a product manager. Score and prioritise this feature list using ${vals[1]}.
+Context: ${vals[2] || 'general SaaS product'}.
+Features: ${vals[0]}
+
+Return ONLY a JSON object (no markdown, no backticks). For RICE: score each dimension 1-10 then total = R*I*C/E. For ICE: total = I*C*E, each 1-10.
+{"framework":"${vals[1].includes('RICE')?'RICE':'ICE'}","features":[{"name":"feature name","scores":{"reach_or_impact":7,"impact_or_confidence":8,"confidence_or_ease":7,"effort_or_na":3},"total":186,"rank":1,"rationale":"one sentence why"},{"name":"feature name","scores":{"reach_or_impact":5,"impact_or_confidence":6,"confidence_or_ease":8,"effort_or_na":5},"total":48,"rank":2,"rationale":"one sentence why"}],"recommendation":"2-sentence overall recommendation"}`,
+    render: renderPrioritisation
+  },
+  {
+    id: 3,
+    icon: 'ti-speakerphone',
+    color: '#FAECE7',
+    tcolor: '#712B13',
+    label: '04 — Release notes writer',
+    fields: [
+      { id: 'f0', label: 'Paste your changelog / diff notes', type: 'textarea', placeholder: 'e.g.\n- Fixed auth token expiry bug\n- Added CSV export to reports\n- Redesigned onboarding flow\n- Deprecated v1 API endpoints' },
+      { id: 'f1', label: 'Audience segment', type: 'select', options: ['End users (non-technical)','Power users','Developers / API users','All audiences (3 versions)'] },
+      { id: 'f2', label: 'Tone', type: 'select', options: ['Friendly & conversational','Professional & concise','Excited & marketing-y'] }
+    ],
+    prompt: (vals) => `You are a product writer. Write release notes from this changelog for ${vals[1]} in a ${vals[2]} tone.
+
+Changelog: ${vals[0]}
+
+Return ONLY a JSON object (no markdown, no backticks):
+{"version_label":"e.g. June 2026","headline":"one punchy headline","segments":[{"audience":"${vals[1] === 'All audiences (3 versions)' ? 'End users' : vals[1]}","notes":"2-4 bullet points as plain prose sentences. Focus on what changed for them and why it matters."},${vals[1] === 'All audiences (3 versions)' ? '{"audience":"Power users","notes":"2-4 bullet points as prose."},{"audience":"Developers","notes":"2-4 bullet points as prose."}' : ''}],"emoji_headline":"same headline with 1 fitting emoji prepended","whats_next":"one sentence teaser for what is coming next"}`,
+    render: renderReleaseNotes
+  },
+  {
+    id: 4,
+    icon: 'ti-telescope',
+    color: '#F1EFE8',
+    tcolor: '#444441',
+    label: '05 — Competitor feature tracker',
+    fields: [
+      { id: 'f0', label: 'Competitor name', type: 'text', placeholder: 'e.g. Notion, Linear, Figma...' },
+      { id: 'f1', label: 'Your product category', type: 'text', placeholder: 'e.g. project management, design tools, CRM...' },
+      { id: 'f2', label: 'Your product\'s focus / differentiator', type: 'text', placeholder: 'e.g. we focus on async teams, small businesses...' }
+    ],
+    prompt: (vals) => `You are a product strategist. Based on your knowledge of ${vals[0]}, summarise their likely recent product direction, key features, and strategic positioning in the ${vals[1]} space.
+
+Our product focus: ${vals[2]}.
+
+Return ONLY a JSON object (no markdown, no backticks):
+{"competitor":"${vals[0]}","category":"${vals[1]}","recent_features":[{"feature":"feature name","description":"what it does in 1 sentence","strategic_intent":"why they likely built this"},{"feature":"feature name","description":"what it does","strategic_intent":"why they built it"},{"feature":"feature name","description":"what it does","strategic_intent":"why they built it"}],"positioning":"2-sentence summary of their overall product strategy","threats":[{"threat":"threat 1","severity":"high|medium|low"},{"threat":"threat 2","severity":"high|medium|low"}],"opportunities":["opportunity for our product 1","opportunity 2"],"tldr":"one punchy sentence strategic summary","caveat":"Note that this is based on training data and may not reflect the most current releases."}`,
+    render: renderCompetitor
+  }
+];
+
+let currentTool = null;
+
+function openTool(idx) {
+  currentTool = idx;
+  const t = TOOLS[idx];
+  document.getElementById('tool-list').style.display = 'none';
+  const at = document.getElementById('active-tool');
+  at.style.display = 'block';
+
+  let fieldsHTML = `<div style="display:flex; align-items:center; gap:10px; margin-bottom:1.2rem;">
+    <div style="width:36px; height:36px; border-radius:var(--border-radius-md); background:${t.color}; color:${t.tcolor}; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;"><i class="ti ${t.icon}" aria-hidden="true"></i></div>
+    <p style="font-size:15px; font-weight:500; margin:0; color:var(--color-text-primary);">${t.label}</p>
+  </div>`;
+
+  t.fields.forEach((f, i) => {
+    fieldsHTML += `<div style="margin-bottom:12px;">
+      <label for="tf${i}" style="display:block; font-size:13px; color:var(--color-text-secondary); margin-bottom:6px;">${f.label}</label>`;
+    if (f.type === 'textarea') fieldsHTML += `<textarea id="tf${i}" placeholder="${f.placeholder}"></textarea>`;
+    else if (f.type === 'select') fieldsHTML += `<select id="tf${i}">${f.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
+    else fieldsHTML += `<input type="text" id="tf${i}" placeholder="${f.placeholder}" style="width:100%; box-sizing:border-box;">`;
+    fieldsHTML += `</div>`;
+  });
+
+  fieldsHTML += `<div style="margin-top:1rem;"><button class="run-btn" id="run-btn" onclick="runTool()"><i class="ti ti-player-play" style="font-size:14px; margin-right:6px; vertical-align:-2px;" aria-hidden="true"></i>Run</button></div>`;
+  fieldsHTML += `<div id="tool-output"></div>`;
+
+  document.getElementById('tool-body').innerHTML = fieldsHTML;
+}
+
+function closeTool() {
+  document.getElementById('tool-list').style.display = 'block';
+  document.getElementById('active-tool').style.display = 'none';
+  document.getElementById('tool-body').innerHTML = '';
+  currentTool = null;
+}
+
+async function runTool() {
+  const t = TOOLS[currentTool];
+  const vals = t.fields.map((f, i) => {
+    const el = document.getElementById(`tf${i}`);
+    return el ? el.value.trim() : '';
+  });
+
+  if (!vals[0]) { alert('Please fill in the first field.'); return; }
+
+  const btn = document.getElementById('run-btn');
+  const out = document.getElementById('tool-output');
+  btn.disabled = true;
+  out.innerHTML = `<div style="margin-top:1rem; font-size:14px; color:var(--color-text-secondary);"><span class="spinner"></span>Generating…</div>`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: t.prompt(vals) }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(i => i.text || '').join('');
+    const clean = text.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    out.innerHTML = '';
+    t.render(parsed, out);
+  } catch(e) {
+    out.innerHTML = `<div style="margin-top:1rem; font-size:14px; color:var(--color-text-danger); background:var(--color-background-danger); padding:12px; border-radius:var(--border-radius-md);">Something went wrong. Please try again.</div>`;
+  }
+  btn.disabled = false;
+}
+
+function card(content) {
+  return `<div class="output-card">${content}</div>`;
+}
+function secLabel(t) { return `<div class="section-label">${t}</div>`; }
+function badge(txt, cls) { return `<span class="badge ${cls}">${txt}</span>`; }
+function ul(items, muted) { return `<ul style="margin:0; padding-left:18px; font-size:14px; line-height:1.7;">${items.map(i=>`<li style="${muted?'color:var(--color-text-secondary)':''}">${i}</li>`).join('')}</ul>`; }
+
+function renderPRD(d, el) {
+  const metricType = t => ({adoption:'b-purple',engagement:'b-teal',quality:'b-coral',business:'b-amber'}[t]||'b-gray');
+  el.innerHTML = card(`
+    <p style="font-size:16px; font-weight:500; margin:0 0 4px;">${d.title}</p>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin:0 0 1rem;">${d.problem}</p>
+    <hr class="div">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+      <div>${secLabel('Goals')}${ul(d.goals)}</div>
+      <div>${secLabel('Non-goals')}${ul(d.non_goals, true)}</div>
+    </div>
+    <hr class="div">
+    ${secLabel('User stories')}
+    ${d.user_stories.map(s=>`<div style="margin-bottom:10px;">${badge(s.persona,'b-purple')}<p style="margin:4px 0 0; font-size:14px; line-height:1.6;">${s.story}</p></div>`).join('')}
+    <hr class="div">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+      <div>${secLabel('Must have')}${ul(d.requirements.must)}</div>
+      <div>${secLabel('Nice to have')}${ul(d.requirements.nice, true)}</div>
+    </div>
+    <hr class="div">
+    ${secLabel('Success metrics')}
+    ${d.metrics.map(m=>`<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:0.5px solid var(--color-border-tertiary);">${badge(m.type, metricType(m.type))}<span style="font-size:14px; font-weight:500; flex:1;">${m.name}</span><span style="font-size:13px; color:var(--color-text-secondary);">${m.target}</span></div>`).join('')}
+    <hr class="div">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div>${secLabel('Risks')}${ul(d.risks)}</div>
+      <div>${secLabel('Open questions')}${ul(d.questions)}</div>
+    </div>
+  `);
+}
+
+function renderSynthesis(d, el) {
+  const freq = f => ({high:'b-coral',medium:'b-amber',low:'b-gray'}[f]||'b-gray');
+  const conf = c => ({high:'b-teal',medium:'b-amber',low:'b-coral'}[c]||'b-gray');
+  el.innerHTML = card(`
+    <div style="display:flex; gap:8px; margin-bottom:1rem; flex-wrap:wrap;">
+      ${badge('Confidence: ' + d.confidence, conf(d.confidence))}
+      ${d.segments.map(s=>badge(s,'b-purple')).join('')}
+    </div>
+    ${secLabel('Themes')}
+    ${d.themes.map(t=>`<div class="theme-cluster"><div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">${badge(t.frequency,'b-' + (t.frequency==='high'?'coral':t.frequency==='medium'?'amber':'gray'))}<span style="font-size:14px; font-weight:500;">${t.name}</span></div><p style="font-size:13px; color:var(--color-text-secondary); margin:0 0 4px;">${t.pain}</p>${t.quotes.map(q=>`<p style="font-size:12px; color:var(--color-text-tertiary); font-style:italic; margin:2px 0;">"${q}"</p>`).join('')}</div>`).join('')}
+    <hr class="div">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div>${secLabel('Top pain points')}${ul(d.top_pain_points)}</div>
+      <div>${secLabel('Suggested solutions')}${ul(d.solutions)}</div>
+    </div>
+    <hr class="div">
+    ${secLabel('Recommended next steps')}${ul(d.next_steps)}
+  `);
+}
+
+function renderPrioritisation(d, el) {
+  const maxScore = Math.max(...d.features.map(f=>f.total));
+  const sevColor = s => s==='high'?'b-coral':s==='medium'?'b-amber':'b-gray';
+  el.innerHTML = card(`
+    ${secLabel(d.framework + ' scores')}
+    ${d.features.sort((a,b)=>a.rank-b.rank).map(f=>`
+      <div class="score-row">
+        <span style="font-size:13px; font-weight:500; min-width:20px; color:var(--color-text-tertiary);">${f.rank}</span>
+        <span style="font-size:14px; flex:1; min-width:0;">${f.name}</span>
+        <div class="score-bar-wrap"><div class="score-bar" style="width:${Math.round(f.total/maxScore*100)}%"></div></div>
+        <span style="font-size:13px; font-weight:500; min-width:36px; text-align:right; color:#534AB7;">${Math.round(f.total)}</span>
+      </div>`).join('')}
+    <hr class="div">
+    ${secLabel('Rationale')}
+    ${d.features.sort((a,b)=>a.rank-b.rank).map(f=>`<p style="font-size:13px; margin:0 0 6px;"><span style="font-weight:500;">${f.name}:</span> <span style="color:var(--color-text-secondary);">${f.rationale}</span></p>`).join('')}
+    <hr class="div">
+    <p style="font-size:14px; margin:0; line-height:1.6;">${d.recommendation}</p>
+  `);
+}
+
+function renderReleaseNotes(d, el) {
+  el.innerHTML = card(`
+    <p style="font-size:13px; color:var(--color-text-tertiary); margin:0 0 2px;">${d.version_label}</p>
+    <p style="font-size:16px; font-weight:500; margin:0 0 12px;">${d.emoji_headline}</p>
+    <hr class="div">
+    ${d.segments.map(s=>`
+      <div style="margin-bottom:12px;">
+        ${secLabel(s.audience)}
+        <p style="font-size:14px; line-height:1.7; margin:0; color:var(--color-text-primary);">${s.notes}</p>
+      </div>`).join('')}
+    <hr class="div">
+    <p style="font-size:13px; color:var(--color-text-secondary); margin:0;"><i class="ti ti-arrow-right" style="vertical-align:-2px; margin-right:4px; font-size:14px;" aria-hidden="true"></i>${d.whats_next}</p>
+  `);
+}
+
+function renderCompetitor(d, el) {
+  const sev = s => ({high:'b-coral',medium:'b-amber',low:'b-gray'}[s]||'b-gray');
+  el.innerHTML = card(`
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+      <span style="font-size:15px; font-weight:500;">${d.competitor}</span>
+      ${badge(d.category, 'b-gray')}
+    </div>
+    <p style="font-size:14px; line-height:1.6; margin:0 0 12px; font-style:italic; color:var(--color-text-secondary);">${d.tldr}</p>
+    <hr class="div">
+    ${secLabel('Recent features & intent')}
+    ${d.recent_features.map(f=>`<div style="margin-bottom:10px;"><p style="font-size:14px; font-weight:500; margin:0 0 2px;">${f.feature}</p><p style="font-size:13px; color:var(--color-text-secondary); margin:0 0 2px;">${f.description}</p><p style="font-size:12px; color:var(--color-text-tertiary); margin:0;"><i class="ti ti-bulb" style="vertical-align:-2px; font-size:13px; margin-right:3px;" aria-hidden="true"></i>${f.strategic_intent}</p></div>`).join('')}
+    <hr class="div">
+    <p style="font-size:13px; margin:0 0 12px; line-height:1.6; color:var(--color-text-secondary);">${d.positioning}</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div>${secLabel('Threats')}${d.threats.map(t=>`<div style="margin-bottom:6px;">${badge(t.severity,sev(t.severity))}<span style="font-size:13px;">${t.threat}</span></div>`).join('')}</div>
+      <div>${secLabel('Opportunities for us')}${ul(d.opportunities)}</div>
+    </div>
+    ${d.caveat ? `<p style="font-size:11px; color:var(--color-text-tertiary); margin:12px 0 0; border-top:0.5px solid var(--color-border-tertiary); padding-top:8px;">${d.caveat}</p>` : ''}
+  `);
+}
+</script>
